@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Lifeline Beyond - Singularity Edition</title>
+<style>
+body{margin:0;font-family:Consolas,monospace;background:#050a16;color:#cfe4ff;}
+header{padding:20px;background:#04070f;border-bottom:2px solid #223a7a;}
+h1{margin:0;color:#6fd8ff;}
+nav{display:flex;flex-wrap:wrap;gap:5px;padding:10px;background:#0c1330;}
+nav button{background:#1b2a6b;border:none;color:white;padding:6px 12px;cursor:pointer;}
+nav button:hover{background:#324a9e;}
+.page{display:none;padding:15px;}
+.active{display:block;}
+.panel{background:#0e1736;padding:12px;margin-bottom:12px;border-radius:6px;}
+input,select,textarea{background:#0c132c;color:white;border:1px solid #3350a0;padding:4px;}
+.result{background:#02040a;padding:8px;margin-top:8px;border:1px solid #3350a0;}
+.rulechapter{margin-bottom:10px;}
+.rulechapter h3{cursor:pointer;background:#182459;padding:6px;margin:0;}
+.rulecontent{display:none;padding:6px;background:#0e1736;}
+table{border-collapse:collapse;width:100%;}
+td,th{border:1px solid #324a9e;padding:4px;}
+ul{list-style:none;padding-left:15px;}
+</style>
+</head>
+<body>
+
+<header>
+<h1>LIFELINE BEYOND - Singularity Edition</h1>
+<div>Universal Crisis Management Organization</div>
+</header>
+
+<nav>
+<button onclick="openPage('rulebook')">Rulebook</button>
+<button onclick="openPage('characters')">Character Builder</button>
+<button onclick="openPage('ships')">Spacecraft</button>
+<button onclick="openPage('galaxy')">Galaxy</button>
+<button onclick="openPage('missions')">Missions</button>
+<button onclick="openPage('gm')">GM Tools</button>
+</nav>
+
+<!-- RULEBOOK -->
+<div id="rulebook" class="page active">
+<div class="panel">
+<h2>Core System</h2>
+<p>d6 dice pool. 5+ = success. Number of successes determines outcome.</p>
+<table>
+<tr><th>Difficulty</th><th>Successes</th></tr>
+<tr><td>Routine</td><td>1</td></tr>
+<tr><td>Standard</td><td>2</td></tr>
+<tr><td>Difficult</td><td>3</td></tr>
+<tr><td>Severe</td><td>4</td></tr>
+<tr><td>Extreme</td><td>5</td></tr>
+</table>
+</div>
+
+<div class="rulechapter">
+<h3 onclick="toggleChapter(this)">Attributes & Derived Stats</h3>
+<div class="rulecontent">
+<p>Attributes: STR, AGI, END, INT, PER, PRE</p>
+<p>Derived: HP=END*5, Stress=PRE*4, Carry=STR*10, Initiative=AGI+PER</p>
+</div>
+</div>
+
+<div class="rulechapter">
+<h3 onclick="toggleChapter(this)">Skills & Trainings</h3>
+<div class="rulecontent">
+<p>Characters can select trainings (edges) to enhance abilities. Downfalls impose penalties.</p>
+</div>
+</div>
+
+<div class="rulechapter">
+<h3 onclick="toggleChapter(this)">Combat & Dice</h3>
+<div class="rulecontent">
+<p>Roll dice equal to pool. Each 5+ counts as a success. Use multiple dice for attacks, skill checks, or ship maneuvers.</p>
+</div>
+</div>
+</div>
+
+<!-- CHARACTER BUILDER -->
+<div id="characters" class="page">
+<div class="panel">
+<h2>Linebreaker Identity</h2>
+Name <input id="charName"><br><br>
+Species <select id="speciesSelect"></select>
+Job <select id="jobSelect"></select>
+</div>
+
+<div class="panel">
+<h2>Attributes</h2>
+STR <input type="number" id="str" value="2">
+AGI <input type="number" id="agi" value="2">
+END <input type="number" id="end" value="2">
+INT <input type="number" id="int" value="2">
+PER <input type="number" id="per" value="2">
+PRE <input type="number" id="pre" value="2"><br><br>
+<button onclick="calcStats()">Calculate Derived</button>
+<div id="derivedStats" class="result"></div>
+</div>
+
+<div class="panel">
+<h2>Trainings</h2>
+<select id="trainingSelect"></select>
+<button onclick="addTraining()">Add</button>
+<ul id="trainingList"></ul>
+</div>
+
+<div class="panel">
+<h2>Downfalls</h2>
+<select id="downfallSelect"></select>
+<button onclick="addDownfall()">Add</button>
+<ul id="downfallList"></ul>
+</div>
+
+<div class="panel">
+<h2>Dice Roller</h2>
+Pool <input type="number" id="dicePool" value="6">
+<button onclick="rollDice()">Roll</button>
+<div id="diceResult" class="result"></div>
+</div>
+
+<div class="panel">
+<button onclick="saveCharacter()">Save Character</button>
+<button onclick="loadCharacter()">Load Character</button>
+<button onclick="exportCharacter()">Export JSON</button>
+</div>
+</div>
+
+<!-- SHIPS -->
+<div id="ships" class="page">
+<div class="panel">
+<h2>Spacecraft Builder</h2>
+Ship Name <input id="shipName"><br>
+Hull <input type="number" id="shipHull" value="20">
+Shields <input type="number" id="shipShields" value="15">
+Power Core <input type="number" id="shipPower" value="25"><br>
+</div>
+
+<div class="panel">
+<h2>Modules</h2>
+<select id="moduleSelect"></select>
+<button onclick="addModule()">Add Module</button>
+<ul id="moduleList"></ul>
+</div>
+</div>
+
+<!-- GALAXY -->
+<div id="galaxy" class="page">
+<div class="panel">
+<h2>Procedural Star System</h2>
+<button onclick="generateSystem()">Generate</button>
+<div id="systemResult" class="result"></div>
+</div>
+<div class="panel">
+<h2>Planet Generator</h2>
+<button onclick="generatePlanet()">Generate</button>
+<div id="planetResult" class="result"></div>
+</div>
+</div>
+
+<!-- MISSIONS -->
+<div id="missions" class="page">
+<div class="panel">
+<h2>Mission Generator</h2>
+<button onclick="generateMission()">Generate Mission</button>
+<div id="missionResult" class="result"></div>
+</div>
+</div>
+
+<!-- GM TOOLS -->
+<div id="gm" class="page">
+<div class="panel">
+<h2>NPC Generator</h2>
+<button onclick="generateNPC()">Generate NPC</button>
+<div id="npcResult" class="result"></div>
+</div>
+<div class="panel">
+<h2>Derelict Generator</h2>
+<button onclick="generateDerelict()">Generate Derelict</button>
+<div id="derelictResult" class="result"></div>
+</div>
+<div class="panel">
+<h2>Dice Log</h2>
+<div id="diceLog" class="result"></div>
+</div>
+</div>
+
+<script>
+// Page navigation
+function openPage(id){document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.getElementById(id).classList.add("active");}
+function toggleChapter(el){let c=el.nextElementSibling;c.style.display=(c.style.display==="block")?"none":"block";}
+
+// Data
+const speciesList=["Human","Synth","Helion","Aeral","Pelagic","Vortan","Cryon","Sylith","Karn","Taurin","Arkan","Lumen","Gravari","Nerid","Drath","Veloran","Ionite","Myrr","Talren","Orathi","Kaelis","Thrynn","Ulvani","Serrik","Boreal","Xylen","Caldrin","Zenari","Volkir","Eldari"];
+const jobs=["Rescue Specialist","Pilot","Engineer","Medic","Security Officer","Explorer","Drone Operator","Navigator","Salvage Expert","Xenologist","Tactical Officer","Search Commander","Hazard Technician","Systems Analyst","Astrogator","Operations Chief","Field Surgeon","Heavy Operator","Recon Specialist","Diplomatic Liaison"];
+const trainings=["Rapid EVA","Drone Commander","Advanced Trauma Care","Starship Ace","Hazard Immunity","Zero-G Combat","Emergency Fabrication","Shield Technician","Deep Scanner","Alien Linguistics","Tactical Breach","Atmospheric Pilot","Cyber Warfare","Heavy Weapons Certified"];
+const downfalls=["Reckless","Claustrophobic","Radiation Sensitive","Authority Issues","Cybernetic Instability","Slow Reflexes","Addictive Personality","Chronic Injury","Impulsive","Phobia: Void"];
+const modulesList=["Medical Bay","Drone Hangar","Salvage Claw","Rescue Pods","Shield Amplifier","Long Range Sensors","Quantum Scanner","Fabrication Lab","Missile Rack"];
+
+speciesList.forEach(s=>speciesSelect.add(new Option(s)));
+jobs.forEach(j=>jobSelect.add(new Option(j)));
+trainings.forEach(t=>trainingSelect.add(new Option(t)));
+downfalls.forEach(d=>downfallSelect.add(new Option(d)));
+modulesList.forEach(m=>moduleSelect.add(new Option(m)));
+
+// Character derived stats
+function calcStats(){
+  const hp=end.value*5, stress=pre.value*4, carry=str.value*10, init=Number(agi.value)+Number(per.value);
+  derivedStats.innerHTML=`HP: ${hp}<br>Stress: ${stress}<br>Carry: ${carry}<br>Initiative Dice: ${init}`;
+}
+
+// Dice roller
+function rollDice(){
+  const pool=Number(dicePool.value); let s=0; let rolls=[];
+  for(let i=0;i<pool;i++){let d=Math.floor(Math.random()*6)+1;rolls.push(d); if(d>=5)s++;}
+  diceResult.innerHTML=`Rolls: ${rolls.join(", ")}<br>Successes: ${s}`;
+  diceLog.innerHTML+=`<br>${new Date().toLocaleTimeString()}: Rolled ${pool} dice => ${s} successes`;
+}
+
+// Trainings & Downfalls
+function addTraining(){let li=document.createElement("li"); li.textContent=trainingSelect.value; trainingList.appendChild(li);}
+function addDownfall(){let li=document.createElement("li"); li.textContent=downfallSelect.value; downfallList.appendChild(li);}
+
+// Character Save/Load/Export
+function saveCharacter(){const c={name:charName.value,species:speciesSelect.value,job:jobSelect.value,str:str.value,agi:agi.value,end:end.value,int:int.value,per:per.value,pre:pre.value};localStorage.setItem("lifelineChar",JSON.stringify(c));alert("Character Saved");}
+function loadCharacter(){let c=JSON.parse(localStorage.getItem("lifelineChar"));if(!c)return;charName.value=c.name;speciesSelect.value=c.species;jobSelect.value=c.job;str.value=c.str;agi.value=c.agi;end.value=c.end;int.value=c.int;per.value=c.per;pre.value=c.pre;}
+function exportCharacter(){let data={name:charName.value,species:speciesSelect.value,job:jobSelect.value,str:str.value,agi:agi.value,end:end.value,int:int.value,per:per.value,pre:pre.value};let blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});let a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="linebreaker.json";a.click();}
+
+// Modules
+function addModule(){let li=document.createElement("li");li.textContent=moduleSelect.value;moduleList.appendChild(li);}
+
+// Procedural Generators
+function generateSystem(){const stars=["Red Dwarf","Binary Star","Blue Giant","White Dwarf"], planets=Math.floor(Math.random()*10)+1; systemResult.innerHTML=`${stars[Math.floor(Math.random()*stars.length)]} with ${planets} planets`;}
+function generatePlanet(){const types=["Rocky","Ocean","Gas Giant","Ice","Desert","Volcanic"]; planetResult.innerHTML=types[Math.floor(Math.random()*types.length)];}
+function generateMission(){const missions=["Distress Signal","Derelict Investigation","Colony Evacuation","Alien Encounter","Pirate Interdiction"],locs=["Asteroid Belt","Nebula","Gas Giant Orbit","Frozen Moon"]; missionResult.innerHTML=`${missions[Math.floor(Math.random()*missions.length)]} at ${locs[Math.floor(Math.random()*locs.length)]}`;}
+function generateNPC(){npcResult.innerHTML=`${speciesList[Math.floor(Math.random()*speciesList.length)]} ${jobs[Math.floor(Math.random()*jobs.length)]}`;}
+function generateDerelict(){const types=["Research Station","Mining Ship","Colony Vessel","Ancient Alien Structure"], threats=["Radiation Leak","Rogue AI","Alien Organism","Hull Collapse"]; derelictResult.innerHTML=`${types[Math.floor(Math.random()*types.length)]} with ${threats[Math.floor(Math.random()*threats.length)]}`;}
+</script>
+</body>
+</html>
